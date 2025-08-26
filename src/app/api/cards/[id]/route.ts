@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
-import { useUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 const cardUpdateSchema = z.object({
   name: z.string().min(1).optional(),
@@ -18,9 +18,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -32,7 +32,7 @@ export async function DELETE(
     await prisma.creditCard.deleteMany({
       where: {
         id: cardId,
-        userId: user.id,
+        userId,
       },
     });
 
@@ -56,9 +56,9 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -68,7 +68,7 @@ export async function PUT(
     const cardId = params.id;
 
     const existingCreditCard = await prisma.creditCard.findFirst({
-      where: { id: cardId, userId: user.id },
+      where: { id: cardId, userId },
     });
 
     if (!existingCreditCard) {
@@ -105,9 +105,9 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -117,7 +117,7 @@ export async function GET(
     const card = await prisma.creditCard.findFirst({
       where: {
         id: params.id,
-        userId: user.id,
+        userId,
       },
       include: { transactions: true },
     });

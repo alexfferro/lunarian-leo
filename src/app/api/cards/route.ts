@@ -2,7 +2,7 @@ import { Prisma } from "@/generated/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-import { useUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 const cardSchema = z.object({
   name: z.string().min(1, "O nome é obrigatório."),
@@ -13,9 +13,9 @@ const cardSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       data: {
         ...body,
         limit: new Prisma.Decimal(body.limit),
-        userId: user.id,
+        userId,
       },
     });
 
@@ -49,18 +49,19 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
     );
   }
+
   try {
     const cards = await prisma.creditCard.findMany({
       where: {
-        userId: user.id,
+        userId,
       },
     });
     return NextResponse.json(cards, { status: 200 });

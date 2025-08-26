@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
 import { addMonths } from "date-fns";
-import { useUser } from "@clerk/nextjs";
 import { Prisma } from "@/generated/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 const installmentSchema = z.object({
   description: z.string().min(1, "A descrição é obrigatória."),
@@ -15,9 +15,9 @@ const installmentSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
           totalAmount: new Prisma.Decimal(totalAmount),
           numberOfInstallments,
           purchaseDate: initialDate,
-          userId: user.id,
+          userId,
           creditCardId: creditCardId,
           categoryId: categoryId,
         },
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
             amount: new Prisma.Decimal(installmentAmount),
             date: transactionDate,
             type: "EXPENSE",
-            userId: user.id,
+            userId,
             categoryId: categoryId,
             creditCardId: creditCardId,
             installmentPurchaseId: purchase.id,
@@ -91,9 +91,9 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -102,7 +102,7 @@ export async function GET() {
   try {
     const installments = await prisma.installmentPurchase.findMany({
       where: {
-        userId: user.id,
+        userId,
       },
       orderBy: {
         purchaseDate: "desc",

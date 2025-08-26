@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { endOfMonth, startOfMonth } from "date-fns";
-import { useUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET() {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -21,7 +21,7 @@ export async function GET() {
     const totals = await prisma.transaction.groupBy({
       by: ["type"],
       where: {
-        userId: user.id,
+        userId,
         date: {
           gte: startDate,
           lte: endDate,
@@ -44,7 +44,7 @@ export async function GET() {
     const expensesByCategory = await prisma.transaction.groupBy({
       by: ["categoryId"],
       where: {
-        userId: user.id,
+        userId,
         date: {
           gte: startDate,
           lte: endDate,

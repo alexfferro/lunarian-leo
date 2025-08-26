@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-import { useUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 const installmentUpdateSchema = z.object({
   description: z.string().min(1).optional(),
@@ -19,9 +19,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -32,7 +32,7 @@ export async function DELETE(
 
     const result = await prisma.$transaction(async (tx) => {
       const purchase = await tx.installmentPurchase.findFirst({
-        where: { id: purchaseId, userId: user.id },
+        where: { id: purchaseId, userId },
         include: { transactions: { orderBy: { date: "asc" } } },
       });
 
@@ -76,21 +76,22 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
     );
   }
+
   try {
     const purchaseId = params.id;
     const body = await installmentUpdateSchema.parseAsync(await request.json());
 
     const result = await prisma.$transaction(async (tx) => {
       const updatedPurchase = await tx.installmentPurchase.update({
-        where: { id: purchaseId, userId: user.id },
+        where: { id: purchaseId, userId },
         data: {
           description: body.description,
           categoryId: body.categoryId,

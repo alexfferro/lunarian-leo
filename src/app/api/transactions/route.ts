@@ -2,7 +2,7 @@ import { Prisma } from "@/generated/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-import { useUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 const transactionSchema = z.object({
   description: z.string().min(1, "A descrição é obrigatória."),
@@ -17,9 +17,9 @@ const transactionSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
         ...body,
         amount: new Prisma.Decimal(body.amount),
         date: new Date(body.date),
-        userId: user.id,
+        userId,
       },
     });
 
@@ -54,18 +54,19 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
     );
   }
+
   try {
     const transactions = await prisma.transaction.findMany({
       where: {
-        userId: user.id,
+        userId,
       },
       orderBy: {
         date: "desc",

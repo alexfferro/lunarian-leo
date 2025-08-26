@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
-import { useUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 const categorySchema = z.object({
   name: z.string().min(1, "O nome é obrigatório."),
@@ -10,14 +10,15 @@ const categorySchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
     );
   }
+
   try {
     const body = await categorySchema.parseAsync(await request.json());
 
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
         name: body.name,
         type: body.type,
         icon: body.icon,
-        userId: user.id,
+        userId,
       },
     });
 
@@ -47,9 +48,8 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const { user } = useUser();
-
-  if (!user) {
+  const { userId } = await auth();
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -59,7 +59,7 @@ export async function GET() {
   try {
     const categories = await prisma.category.findMany({
       where: {
-        userId: user.id,
+        userId,
       },
       orderBy: {
         name: "asc",

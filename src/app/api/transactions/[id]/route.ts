@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
-import { useUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 const transactionUpdateSchema = z.object({
   description: z.string().min(1).optional(),
@@ -22,9 +22,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
@@ -36,7 +36,7 @@ export async function DELETE(
     await prisma.transaction.deleteMany({
       where: {
         id: transactionId,
-        userId: user.id,
+        userId,
       },
     });
 
@@ -60,19 +60,20 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
     );
   }
+
   try {
     const transactionId = params.id;
 
     const existingTransaction = await prisma.transaction.findFirst({
-      where: { id: transactionId, userId: user.id },
+      where: { id: transactionId, userId },
     });
 
     if (!existingTransaction) {
@@ -109,19 +110,20 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { user } = useUser();
+  const { userId } = await auth();
 
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
       { error: "Usuário não autenticado." },
       { status: 401 }
     );
   }
+
   try {
     const transaction = await prisma.transaction.findFirst({
       where: {
         id: params.id,
-        userId: user.id,
+        userId,
       },
       include: { category: true, creditCard: true },
     });
