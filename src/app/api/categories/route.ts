@@ -2,12 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
 import { auth } from "@clerk/nextjs/server";
-
-const categorySchema = z.object({
-  name: z.string().min(1, "O nome é obrigatório."),
-  type: z.enum(["INCOME", "EXPENSE"]),
-  icon: z.string().optional(),
-});
+import { categorySchema } from "@/types/categories";
 
 export async function POST(request: Request) {
   const { userId } = await auth();

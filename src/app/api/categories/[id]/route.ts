@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { z } from "zod";
 import { auth } from "@clerk/nextjs/server";
-
-const categoryUpdateSchema = z.object({
-  name: z.string().min(1, "O nome é obrigatório.").optional(),
-  type: z.enum(["INCOME", "EXPENSE"]).optional(),
-  icon: z.string().optional(),
-});
+import { categoryUpdateSchema } from "@/types/categories";
 
 // =================================================================
 // FUNÇÃO DELETE: Para apagar uma categoria

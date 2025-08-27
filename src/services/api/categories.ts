@@ -1,11 +1,5 @@
 import type { Category } from "@/generated/prisma";
-
-type CategoryData = {
-  id: string;
-  name: string;
-  type: "INCOME" | "EXPENSE";
-  icon?: string | null;
-};
+import type { CategoryData } from "@/types/categories";
 
 export const getCategories = async (): Promise<Category[]> => {
   const response = await fetch("/api/categories");
@@ -13,7 +7,7 @@ export const getCategories = async (): Promise<Category[]> => {
   return response.json();
 };
 
-export const createCategories = async (
+export const createCategory = async (
   data: Partial<CategoryData>
 ): Promise<Category> => {
   const response = await fetch("/api/categories", {

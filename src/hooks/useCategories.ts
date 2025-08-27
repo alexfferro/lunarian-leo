@@ -1,5 +1,5 @@
 import {
-  createCategories,
+  createCategory,
   deleteCategory,
   getCategories,
   updateCategory,
@@ -16,11 +16,11 @@ export function useGetCategories() {
   });
 }
 
-export function useCreateCategories() {
+export function useCreateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createCategories,
+    mutationFn: createCategory,
     onSuccess: () => {
       toast("Categoria criada.");
       queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
@@ -30,7 +30,7 @@ export function useCreateCategories() {
   });
 }
 
-export function useUpdateCategories() {
+export function useUpdateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -44,7 +44,7 @@ export function useUpdateCategories() {
   });
 }
 
-export function useDeleteCategories() {
+export function useDeleteCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
