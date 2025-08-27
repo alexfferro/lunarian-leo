@@ -4,7 +4,7 @@ type CategoryData = {
   id: string;
   name: string;
   type: "INCOME" | "EXPENSE";
-  icon?: string;
+  icon?: string | null;
 };
 
 export const getCategories = async (): Promise<Category[]> => {
