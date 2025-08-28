@@ -1,19 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { z } from "zod";
 import { auth } from "@clerk/nextjs/server";
-
-const transactionUpdateSchema = z.object({
-  description: z.string().min(1).optional(),
-  amount: z.number().positive().optional(),
-  type: z.enum(["INCOME", "EXPENSE"]).optional(),
-  date: z.string().optional(),
-  categoryId: z.string().optional(),
-  creditCardId: z.preprocess(
-    (val) => (val === "" ? undefined : val),
-    z.string().optional()
-  ),
-});
+import { transactionUpdateSchema } from "@/types/transactions";
 
 // =================================================================
 // FUNÇÃO DELETE: Para apagar uma transação

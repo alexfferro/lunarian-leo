@@ -1,20 +1,8 @@
 import { Prisma } from "@/generated/prisma";
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-
-const transactionSchema = z.object({
-  description: z.string().min(1, "A descrição é obrigatória."),
-  amount: z.number().positive("O valor deve ser positivo."),
-  type: z.enum(["INCOME", "EXPENSE"]),
-  date: z.string(),
-  categoryId: z.string().cuid("ID da categoria inválido.").optional(),
-  creditCardId: z.preprocess(
-    (val) => (val === "" ? undefined : val),
-    z.string().optional()
-  ),
-});
+import { transactionSchema } from "@/types/transactions";
 
 export async function POST(request: Request) {
   const { userId } = await auth();
@@ -40,11 +28,8 @@ export async function POST(request: Request) {
     return NextResponse.json(newTransaction, { status: 201 });
   } catch (error) {
     console.error(error);
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Dados inválidos", details: error.flatten().fieldErrors },
-        { status: 400 }
-      );
+    if (error) {
+      return NextResponse.json({ error: "Dados inválidos" }, { status: 400 });
     }
     return NextResponse.json(
       { error: "Erro ao criar a transação." },

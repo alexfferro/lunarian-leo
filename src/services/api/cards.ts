@@ -1,15 +1,5 @@
 import type { CreditCard } from "@/generated/prisma";
 
-type CreditCardData = {
-  id: string;
-  name: string;
-  color: string;
-  limit: number;
-  closingDay: number;
-  dueDate: number;
-  userId: string;
-};
-
 export const getCreditCards = async (): Promise<CreditCard[]> => {
   const response = await fetch("/api/cards");
   if (!response.ok) throw new Error("Falha ao buscar cartões de crédito");
@@ -17,7 +7,7 @@ export const getCreditCards = async (): Promise<CreditCard[]> => {
 };
 
 export const createCreditCard = async (
-  data: Partial<CreditCardData>
+  data: Partial<CreditCard>
 ): Promise<CreditCard> => {
   const response = await fetch("/api/cards", {
     method: "POST",
@@ -31,7 +21,7 @@ export const createCreditCard = async (
 export const updateCreditCard = async ({
   id,
   ...data
-}: Partial<CreditCardData> & { id: string }): Promise<CreditCard> => {
+}: Partial<CreditCard> & { id: string }): Promise<CreditCard> => {
   const response = await fetch(`/api/cards/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

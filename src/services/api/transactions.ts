@@ -1,18 +1,5 @@
 import type { Transaction } from "@/generated/prisma";
 
-type TransactionData = {
-  id: string;
-  userId: string;
-  description: string;
-  amount: number;
-  date: string;
-  type: string;
-  categoryId: string;
-  creditCardId?: string;
-  installmentPurchaseId?: number;
-  installmentNumbers?: number;
-};
-
 export const getTransactions = async (): Promise<Transaction[]> => {
   const response = await fetch("/api/transactions");
   if (!response.ok) throw new Error("Falha ao buscar transações");
@@ -20,7 +7,7 @@ export const getTransactions = async (): Promise<Transaction[]> => {
 };
 
 export const createTransaction = async (
-  data: Partial<TransactionData>
+  data: Partial<Transaction>
 ): Promise<Transaction> => {
   const response = await fetch("/api/transactions", {
     method: "POST",
@@ -34,7 +21,7 @@ export const createTransaction = async (
 export const updateTransaction = async ({
   id,
   ...data
-}: Partial<TransactionData> & { id: string }): Promise<Transaction> => {
+}: Partial<Transaction> & { id: string }): Promise<Transaction> => {
   const response = await fetch(`/api/transactions/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
