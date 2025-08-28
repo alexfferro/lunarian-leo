@@ -29,9 +29,9 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { useCreateCategory } from "@/hooks/useCategories";
-import { IconPicker } from "../IconPicker";
 import { useState } from "react";
 import { Loader2, Plus } from "lucide-react";
+import { IconGridPicker } from "../IconPicker";
 
 export function CreateCategoryDialog() {
   const [isOpen, setIsOpen] = useState(false);
@@ -114,7 +114,7 @@ export function CreateCategoryDialog() {
                 <FormItem>
                   <FormLabel>Ícone</FormLabel>
                   <FormControl>
-                    <IconPicker
+                    <IconGridPicker
                       value={field.value as any}
                       onChange={field.onChange}
                     />

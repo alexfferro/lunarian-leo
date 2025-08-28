@@ -27,12 +27,12 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
-import { useCreateCategory, useUpdateCategory } from "@/hooks/useCategories";
-import { IconPicker } from "../IconPicker";
-import { Loader2, Pencil } from "lucide-react";
+import { useUpdateCategory } from "@/hooks/useCategories";
+import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import type { Category } from "@/generated/prisma";
 import { categoryFormSchema } from "@/types/categories";
+import { IconGridPicker } from "../IconPicker";
 
 interface UpdateCategoryDialogProps {
   category: Category | null;
@@ -130,7 +130,7 @@ export function UpdateCategoryDialog({
                 <FormItem>
                   <FormLabel>Ícone</FormLabel>
                   <FormControl>
-                    <IconPicker
+                    <IconGridPicker
                       value={field.value as any}
                       onChange={field.onChange}
                     />

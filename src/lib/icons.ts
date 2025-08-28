@@ -1,70 +1,88 @@
 // src/lib/icons.ts
 import {
+  // Core Finance & Money
   Banknote,
-  Car,
-  Cat,
-  CircleDollarSign,
-  FerrisWheel,
-  Fuel,
-  Gift,
-  GraduationCap,
-  HandCoins,
-  Home,
+  CreditCard,
   Landmark,
-  Martini,
-  Megaphone,
   PiggyBank,
-  Pizza,
-  Plane,
-  Popcorn,
-  Shirt,
-  ShoppingBag,
-  Soup,
-  Sparkles,
-  Sprout,
-  Star,
-  Train,
+  Wallet,
+  CircleDollarSign,
+  Receipt,
+  HandCoins,
+
+  // Charts & Trends
+  TrendingUp,
+  TrendingDown,
+  LineChart,
+  PieChart,
+
+  // Categories: Expenses & Lifestyle
+  Home,
+  Car,
+  Fuel,
   Utensils,
-  Wifi,
-  LayoutGrid,
-  ArrowDownUp,
+  ShoppingCart,
+  GraduationCap,
+  HeartPulse,
+  Gift,
+  Plane,
+  Shirt,
+  Martini,
+  Sprout, // Investments
+
+  // UI & Actions
+  ArrowDownUp, // Transactions
+  ArrowLeftRight, // Transfers
+  Repeat, // Recurring
   Plus,
-  Pilcrow,
+  Settings,
+  Filter,
+  Calendar,
+  LayoutGrid, // Dashboard
 } from "lucide-react";
 
-// O objeto que mapeia o nome do ícone ao seu componente
+// The object that maps the icon name to its component
 export const ICONS = {
+  // Core Finance & Money
   Banknote,
-  Car,
-  Cat,
-  CircleDollarSign,
-  FerrisWheel,
-  Fuel,
-  Gift,
-  GraduationCap,
-  HandCoins,
-  Home,
+  CreditCard,
   Landmark,
-  Martini,
-  Megaphone,
   PiggyBank,
-  Pizza,
-  Plane,
-  Popcorn,
-  Shirt,
-  ShoppingBag,
-  Soup,
-  Sparkles,
-  Sprout,
-  Star,
-  Train,
+  Wallet,
+  CircleDollarSign,
+  Receipt,
+  HandCoins,
+
+  // Charts & Trends
+  TrendingUp,
+  TrendingDown,
+  LineChart,
+  PieChart,
+
+  // Categories: Expenses & Lifestyle
+  Home,
+  Car,
+  Fuel,
   Utensils,
-  Wifi,
-  LayoutGrid,
+  ShoppingCart,
+  GraduationCap,
+  HeartPulse,
+  Gift,
+  Plane,
+  Shirt,
+  Martini,
+  Sprout,
+
+  // UI & Actions
   ArrowDownUp,
+  ArrowLeftRight,
+  Repeat,
   Plus,
-  Pilcrow,
+  Settings,
+  Filter,
+  Calendar,
+  LayoutGrid,
 };
 
-// O tipo que representa todos os nomes de ícones disponíveis
+// The type that represents all available icon names
 export type IconName = keyof typeof ICONS;

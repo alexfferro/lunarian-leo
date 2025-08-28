@@ -1,22 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Check, ChevronsUpDown, type LucideProps } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { type LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
 import { ICONS } from "@/lib/icons";
 
 export type IconName = keyof typeof ICONS;
@@ -40,59 +25,28 @@ export function DynamicIcon({ name, ...props }: DynamicIconProps) {
   return <IconComponent {...props} />;
 }
 
-export function IconPicker({ value, onChange }: IconPickerProps) {
-  const [open, setOpen] = useState(false);
-
+export function IconGridPicker({ value, onChange }: IconPickerProps) {
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          className="w-full justify-between"
-        >
-          {value ? (
-            <span className="flex items-center gap-2">
-              <DynamicIcon name={value} />
-              {value}
-            </span>
-          ) : (
-            "Selecione um ícone"
+    <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 max-h-96 overflow-y-auto rounded-lg border p-2">
+      {Object.keys(ICONS).map((iconName) => (
+        <button
+          key={iconName}
+          onClick={() => onChange(iconName as IconName)}
+          type="button" // Evita que o botão envie um formulário se estiver dentro de um <form>
+          className={cn(
+            "flex flex-col items-center justify-center gap-1.5 p-2 rounded-md transition-colors aspect-square",
+            "hover:bg-accent hover:text-accent-foreground", // Estilo ao passar o mouse
+            value === iconName
+              ? "bg-primary text-primary-foreground" // Estilo quando selecionado
+              : "bg-transparent" // Estilo padrão
           )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[250px] p-0">
-        <Command>
-          <CommandInput placeholder="Procurar ícone..." />
-          <CommandList>
-            <CommandEmpty>Nenhum ícone encontrado.</CommandEmpty>
-            <CommandGroup>
-              {Object.keys(ICONS).map((iconName) => (
-                <CommandItem
-                  key={iconName}
-                  value={iconName}
-                  onSelect={(currentValue) => {
-                    onChange(currentValue as IconName);
-                    setOpen(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === iconName ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  <span className="flex items-center gap-2">
-                    <DynamicIcon name={iconName as IconName} />
-                    {iconName}
-                  </span>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+        >
+          <DynamicIcon name={iconName as IconName} className="h-5 w-5" />
+          {/* <span className="text-xs text-center truncate w-full">
+            {iconName}
+          </span> */}
+        </button>
+      ))}
+    </div>
   );
 }
