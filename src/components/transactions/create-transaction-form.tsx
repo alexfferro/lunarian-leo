@@ -1,4 +1,3 @@
-import { Decimal } from "@/generated/prisma/runtime/library";
 import { useCreateTransaction } from "@/hooks/useTransactions";
 import { transactionSchema, type TransactionData } from "@/types/transactions";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -51,8 +50,8 @@ export function CreateTransactionForm() {
       description: "",
       date: new Date().toISOString().split("T")[0],
       type: "EXPENSE",
-      categoryId: "none",
-      creditCardId: "none",
+      categoryId: "",
+      creditCardId: null,
     },
   });
 
@@ -60,8 +59,8 @@ export function CreateTransactionForm() {
     mutate(
       {
         ...values,
-        amount: new Decimal(values.amount),
-        date: new Date(values.date),
+        creditCardId:
+          values.creditCardId === "none" ? null : values.creditCardId,
       },
       {
         onSuccess: () => {
@@ -182,7 +181,7 @@ export function CreateTransactionForm() {
                   <FormLabel>Cartão de Crédito</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value ?? ""}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -212,7 +211,7 @@ export function CreateTransactionForm() {
                 {isPending ? (
                   <Loader2 className="animate-spin" />
                 ) : (
-                  "Criar Categoria"
+                  "Criar Transação"
                 )}
               </Button>
             </DialogFooter>

@@ -15,6 +15,7 @@ export async function POST(request: Request) {
   }
   try {
     const body = await transactionSchema.parseAsync(await request.json());
+    console.log(body);
 
     const newTransaction = await prisma.transaction.create({
       data: {

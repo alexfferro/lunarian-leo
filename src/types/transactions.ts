@@ -7,7 +7,7 @@ export const transactionSchema = z.object({
   type: z.enum(TransactionType),
   date: z.string(),
   categoryId: z.string().optional(),
-  creditCardId: z.string().optional(),
+  creditCardId: z.string().nullable(),
 });
 
 export const transactionUpdateSchema = z.object({
@@ -26,3 +26,14 @@ export const transactionUpdateSchema = z.object({
 
 export type TransactionData = z.infer<typeof transactionSchema>;
 export type TransactionUpdateData = z.infer<typeof transactionUpdateSchema>;
+
+export type Transaction = {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  type: TransactionType;
+  userId: string;
+  categoryId: string | null;
+  creditCardId: string | null;
+};

@@ -1,6 +1,5 @@
 "use client";
 
-import { CreateCategoryDialog } from "@/components/categories/create-category-form";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import type { Transaction } from "@/generated/prisma";
@@ -8,6 +7,7 @@ import {
   useDeleteTransaction,
   useGetTransactions,
 } from "@/hooks/useTransactions";
+import { CreateTransactionForm } from "@/components/transactions/create-transaction-form";
 
 export default function TransactionsPage() {
   const [editingTransaction, setEditingTransaction] =
@@ -33,7 +33,7 @@ export default function TransactionsPage() {
         </div>
       )}
       <div className="fixed bottom-18 right-5 z-50">
-        <CreateCategoryDialog />
+        <CreateTransactionForm />
       </div>
       {/* <UpdateCategoryDialog
         category={editingCategory}
