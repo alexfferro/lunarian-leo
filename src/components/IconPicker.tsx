@@ -32,13 +32,13 @@ export function IconGridPicker({ value, onChange }: IconPickerProps) {
         <button
           key={iconName}
           onClick={() => onChange(iconName as IconName)}
-          type="button" // Evita que o botão envie um formulário se estiver dentro de um <form>
+          type="button"
           className={cn(
             "flex flex-col items-center justify-center gap-1.5 p-2 rounded-md transition-colors aspect-square",
-            "hover:bg-accent hover:text-accent-foreground", // Estilo ao passar o mouse
+            "hover:bg-accent hover:text-accent-foreground",
             value === iconName
-              ? "bg-primary text-primary-foreground" // Estilo quando selecionado
-              : "bg-transparent" // Estilo padrão
+              ? "bg-primary text-primary-foreground"
+              : "bg-transparent"
           )}
         >
           <DynamicIcon name={iconName as IconName} className="h-5 w-5" />
